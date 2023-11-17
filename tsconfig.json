@@ -20,6 +20,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "react-app-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
