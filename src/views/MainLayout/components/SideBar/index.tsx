@@ -1,19 +1,19 @@
-import React from 'react'
 import { Layout, Menu } from 'antd'
 
 import styles from './index.module.scss'
-import LogoBar from '../LogoBar'
+import LogoBar from './LogoBar'
 import useSideBar, { menuOptions } from './hook'
 
 const { Sider } = Layout
 
 const SideBar = () => {
-  const { onMenuClick } = useSideBar()
+  const { keys, onMenuClick, onLogoClick } = useSideBar()
 
   return (
-    <Sider className={styles.side} trigger={null}>
-      <LogoBar />
+    <Sider theme="dark" className={styles.side} trigger={null}>
+      <LogoBar onClickHandler={onLogoClick} />
       <Menu
+        selectedKeys={keys}
         theme="dark"
         mode="inline"
         defaultSelectedKeys={['home']}

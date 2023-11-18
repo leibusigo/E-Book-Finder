@@ -1,4 +1,5 @@
 import { FileSearchOutlined, HistoryOutlined } from '@ant-design/icons'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const menuOptions = [
@@ -16,13 +17,25 @@ export const menuOptions = [
 
 const useSideBar = () => {
   const navigate = useNavigate()
+  const [keys, setKeys] = useState<string[]>(['home'])
 
-  const onMenuClick = (key: string) => {
-    navigate(`/${key}`)
-  }
+  const onMenuClick = useCallback(
+    (key: string) => {
+      navigate(`/${key}`)
+      setKeys([key])
+    },
+    [navigate]
+  )
+
+  const onLogoClick = useCallback(() => {
+    navigate(`/home`)
+    setKeys(['home'])
+  }, [navigate])
 
   return {
+    keys,
     onMenuClick,
+    onLogoClick,
   }
 }
 
