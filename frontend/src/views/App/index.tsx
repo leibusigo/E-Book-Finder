@@ -4,12 +4,13 @@ import NotFound from '../NotFound'
 import MainLayout from '../MainLayout'
 import HomePage from '../MainLayout/HomePage'
 import HistoryPage from '../MainLayout/HistoryPage'
-import { ConfigProvider, theme } from 'antd'
+import { ConfigProvider, Empty, theme } from 'antd'
 
 const App = () => {
   return (
     // dark: theme.darkAlgorithm
     <ConfigProvider
+      renderEmpty={() => <Empty description={'暂无数据'} />}
       theme={{
         algorithm: theme.defaultAlgorithm,
         //  token: {

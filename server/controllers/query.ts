@@ -35,7 +35,10 @@ router.post('/search', async ctx => {
       throw new ErrorStat(stats.RESPONSE_ERROR, data.msg || 'unknown error')
     }
   } catch (error) {
-    throw new ErrorStat(stats.RESPONSE_ERROR, error || 'unknown error')
+    throw new ErrorStat(
+      stats.RESPONSE_ERROR,
+      JSON.stringify(error) || 'unknown error'
+    )
   }
 })
 
@@ -59,7 +62,10 @@ router.post('/detail', async ctx => {
       throw new ErrorStat(stats.RESPONSE_ERROR, data.msg || 'unknown error')
     }
   } catch (error) {
-    throw new ErrorStat(stats.RESPONSE_ERROR, error || 'unknown error')
+    throw new ErrorStat(
+      stats.RESPONSE_ERROR,
+      JSON.stringify(error) || 'unknown error'
+    )
   }
 })
 

@@ -18,7 +18,7 @@ instance.interceptors.response.use(
       return Promise.reject(res)
     }
 
-    return res
+    return res.data
   },
   error => {
     message.error(error.message || error)

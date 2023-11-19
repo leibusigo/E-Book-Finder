@@ -1,5 +1,5 @@
 export interface IApiRes<T> {
-  data?: T
+  data: T
   code: number
 }
 

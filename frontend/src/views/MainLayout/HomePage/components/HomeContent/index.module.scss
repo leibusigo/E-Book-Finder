@@ -1,0 +1,11 @@
+.warp {
+  height: calc(100vh - 64px - 48px - 48px);
+  overflow: auto;
+}
+
+.item {
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(60, 90, 100, 0.04);
+  }
+}

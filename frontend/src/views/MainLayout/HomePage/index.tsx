@@ -1,6 +1,7 @@
-import HeaderBar from '../components/HeaderBar'
+import HeaderBar from './components/HeaderBar'
 import { Content } from 'antd/es/layout/layout'
 import { theme } from 'antd'
+import HomeContent from './components/HomeContent'
 
 const HomePage = () => {
   const {
@@ -16,7 +17,9 @@ const HomePage = () => {
           minHeight: 280,
           background: colorBgContainer,
         }}
-      ></Content>
+      >
+        <HomeContent />
+      </Content>
     </>
   )
 }

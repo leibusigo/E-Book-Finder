@@ -2,8 +2,6 @@ import { Layout } from 'antd'
 import { Outlet } from 'react-router-dom'
 
 import SideBar from './components/SideBar'
-import { useEffect } from 'react'
-import { queryBooks } from '../../service/api'
 // import { useEffect, useRef } from 'react'
 // import axios from 'axios'
 
@@ -26,13 +24,6 @@ const MainLayout = () => {
   //       }
   //     })
   // }, [])
-  useEffect(() => {
-    queryBooks({
-      keyword: '无限恐怖',
-      page: 1,
-      sensitive: false,
-    })
-  }, [])
   return (
     <Layout style={{ height: '100vh' }}>
       <SideBar />
