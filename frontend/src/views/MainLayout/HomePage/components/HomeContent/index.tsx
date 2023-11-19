@@ -1,39 +1,83 @@
-import { Empty, List } from 'antd'
+import { Empty, Flex, List, Tooltip } from 'antd'
 
 import styles from './index.module.scss'
 import useHomeContent from './hook'
+import { useCallback, useMemo } from 'react'
+import { IQueryDetails } from '../../../../../models/ResModel'
+import { changeByte } from '../../../../../utils/byteFormat'
 
 const HomeContent = () => {
-  const { hits, resultList, queryLoded, firstScreenLoad, onPageChange } =
+  const { resultList, queryLoded, firstScreenLoad, maxPage, onPageChange } =
     useHomeContent()
+
+  const total = useMemo(
+    () => (maxPage - 1) * 20 + resultList.length,
+    [maxPage, resultList.length]
+  )
+
+  const itemTitle = useCallback(
+    (item: IQueryDetails, index: number) => {
+      return (
+        <Flex gap={40}>
+          <div className={styles.ellipsis}>
+            {(maxPage - 1) * 20 + index + 1}. {item.title}
+          </div>
+        </Flex>
+      )
+    },
+    [maxPage]
+  )
+
+  const itemDesc = useCallback((item: IQueryDetails) => {
+    return (
+      <Flex gap={20}>
+        <div className={`${styles.ellipsis} ${styles.autherInfo}`}>
+          作者：{item.author}
+        </div>
+        <div className={`${styles.ellipsis} ${styles.info}`}>
+          格式：{item.extension}
+        </div>
+        <div className={`${styles.ellipsis} ${styles.info}`}>
+          年份：{item.year}
+        </div>
+        <div className={`${styles.ellipsis} ${styles.info}`}>
+          大小：{changeByte(item.filesize)}
+        </div>
+      </Flex>
+    )
+  }, [])
 
   return (
     <>
       {!firstScreenLoad ? (
         <>
-          <div style={{ fontSize: '12px' }}>共 {hits} 条搜索结果</div>
+          <Tooltip
+            color={'blue'}
+            title="由于接口获取不到所有数据条数，分页器只会显示加载条数"
+          >
+            <div className={styles.loaded_counts}>
+              共加载 {total} 条搜索结果
+            </div>
+          </Tooltip>
+
           <div className={styles.warp}>
             <List
               loading={!queryLoded}
               pagination={{
+                total: total + 1,
+                align: 'center',
                 pageSize: 20,
-                total: hits,
                 showSizeChanger: false,
                 onChange: page => {
                   onPageChange(page)
                 },
               }}
               dataSource={resultList}
-              renderItem={item => (
+              renderItem={(item, index) => (
                 <List.Item className={styles.item}>
                   <List.Item.Meta
-                    title={<div>{item.title}</div>}
-                    description={
-                      <div>
-                        "Ant Design, a design language for background
-                        applications, is refined by Ant UED Team"
-                      </div>
-                    }
+                    title={itemTitle(item, index)}
+                    description={itemDesc(item)}
                   />
                 </List.Item>
               )}

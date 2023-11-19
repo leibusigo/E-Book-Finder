@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const instance = axios.create({
   validateStatus: status => status < 500,
+  timeout: 10000,
 })
 
 instance.interceptors.request.use(config => {
@@ -21,6 +22,9 @@ instance.interceptors.response.use(
     return res.data
   },
   error => {
+    if (axios.isCancel(error)) {
+      console.error('请求被取消')
+    }
     message.error(error.message || error)
     return Promise.reject(error)
   }

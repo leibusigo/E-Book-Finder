@@ -1,11 +1,12 @@
 import PubSub from 'pubsub-js'
 import { useEffect, useState } from 'react'
-import useApi from '../../../../../hooks/useApi'
+import useQueryBook from '../../../../../hooks/useApi'
 
 const useHomeContent = () => {
-  const { resultList, queryLoded, hits, queryBooks } = useApi()
+  const { resultList, queryLoded, queryBooks } = useQueryBook()
   const [firstScreenLoad, setFirstScrennLoad] = useState(true)
   const [value, setValue] = useState('')
+  const [maxPage, setMaxPage] = useState(1)
 
   useEffect(() => {
     const subscription = PubSub.subscribe(
@@ -15,6 +16,7 @@ const useHomeContent = () => {
           await queryBooks(data.value)
           setFirstScrennLoad(false)
           setValue(data.value)
+          setMaxPage(1)
         }
       }
     )
@@ -32,9 +34,18 @@ const useHomeContent = () => {
     if (value) {
       await queryBooks(value, page)
     }
+    if (page > maxPage) {
+      setMaxPage(page)
+    }
   }
 
-  return { hits, resultList, queryLoded, firstScreenLoad, onPageChange }
+  return {
+    resultList,
+    queryLoded,
+    firstScreenLoad,
+    maxPage,
+    onPageChange,
+  }
 }
 
 export default useHomeContent

@@ -9,3 +9,22 @@
     background-color: rgba(60, 90, 100, 0.04);
   }
 }
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info {
+  width: 100px;
+}
+
+.autherInfo {
+  width: 150px;
+}
+
+.loaded_counts {
+  font-size: 12px;
+  width: 130px;
+}
