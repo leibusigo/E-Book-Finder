@@ -2,30 +2,39 @@ import { Empty, Flex, List, Tooltip } from 'antd'
 
 import styles from './index.module.scss'
 import useHomeContent from './hook'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { IQueryDetails } from '../../../../../models/ResModel'
 import { changeByte } from '../../../../../utils/byteFormat'
+import DetailModel from './DetailModel'
 
 const HomeContent = () => {
-  const { resultList, queryLoded, firstScreenLoad, maxPage, onPageChange } =
-    useHomeContent()
+  const {
+    resultList,
+    queryLoded,
+    firstScreenLoad,
+    total,
+    curPage,
+    maxPage,
+    onPageChange,
+  } = useHomeContent()
+  const warpRef = useRef<HTMLDivElement>(null)
+  const [modelOpen, setModelOpen] = useState(false)
 
-  const total = useMemo(
-    () => (maxPage - 1) * 20 + resultList.length,
-    [maxPage, resultList.length]
-  )
+  const onOpenChangeHandler = (open: boolean) => {
+    setModelOpen(open)
+  }
 
   const itemTitle = useCallback(
     (item: IQueryDetails, index: number) => {
       return (
         <Flex gap={40}>
           <div className={styles.ellipsis}>
-            {(maxPage - 1) * 20 + index + 1}. {item.title}
+            {(curPage - 1) * 20 + index + 1}. {item.title}
           </div>
         </Flex>
       )
     },
-    [maxPage]
+    [curPage]
   )
 
   const itemDesc = useCallback((item: IQueryDetails) => {
@@ -49,6 +58,7 @@ const HomeContent = () => {
 
   return (
     <>
+      <DetailModel open={modelOpen} onOpenChange={onOpenChangeHandler} />
       {!firstScreenLoad ? (
         <>
           <Tooltip
@@ -56,25 +66,35 @@ const HomeContent = () => {
             title="由于接口获取不到所有数据条数，分页器只会显示加载条数"
           >
             <div className={styles.loaded_counts}>
-              共加载 {total} 条搜索结果
+              已加载 {total} 条搜索结果
             </div>
           </Tooltip>
 
-          <div className={styles.warp}>
+          <div ref={warpRef} className={styles.warp}>
             <List
               loading={!queryLoded}
               pagination={{
-                total: total + 1,
+                total:
+                  resultList.length === 19 && curPage === maxPage
+                    ? total
+                    : total + 1,
                 align: 'center',
+                current: curPage,
                 pageSize: 20,
                 showSizeChanger: false,
                 onChange: page => {
                   onPageChange(page)
+                  warpRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
                 },
               }}
               dataSource={resultList}
               renderItem={(item, index) => (
-                <List.Item className={styles.item}>
+                <List.Item
+                  onClick={() => {
+                    setModelOpen(true)
+                  }}
+                  className={styles.item}
+                >
                   <List.Item.Meta
                     title={itemTitle(item, index)}
                     description={itemDesc(item)}

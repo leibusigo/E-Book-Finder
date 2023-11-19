@@ -11,7 +11,7 @@ const LogoBar = React.memo(({ onClickHandler }: IProps) => {
   return (
     <div onClick={onClickHandler} className={styles.logo_warp}>
       <LOGOSVG className={styles.logo_icon} />
-      <h1 className={styles.logo_name}>E-BOOK_FINDER</h1>
+      <h1 className={styles.logo_name}>E-BOOK-FINDER</h1>
     </div>
   )
 })

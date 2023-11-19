@@ -9,6 +9,7 @@ const useQueryBook = () => {
   const [queryLoded, setQueryLoaded] = useState(false)
   const [resultList, setResultList] = useState<IQueryDetails[]>([])
   const [hits, setHits] = useState(0)
+  const [total, setTotal] = useState(0)
 
   const queryBooks = async (keyword: string, page = 1) => {
     try {
@@ -18,6 +19,8 @@ const useQueryBook = () => {
       // 有缓存直接使用缓存
       if (dataMap.has(mapKey)) {
         data = dataMap.get(mapKey)
+        const _total = (page - 1) * 20 + data.data.length
+        setTotal(_total > total ? _total : total)
         // 否则请求接口
       } else {
         const res = await queryBooksApi({
@@ -27,12 +30,14 @@ const useQueryBook = () => {
         })
         data = res.data
         dataMap.set(mapKey, data)
+        setTotal((page - 1) * 20 + data.data.length)
       }
       if (JSON.stringify(data) !== '{}') {
         setResultList(data.data)
         setHits(data.hits)
       }
     } catch (error) {
+      setResultList([])
       console.error(error)
     } finally {
       setQueryLoaded(true)
@@ -40,6 +45,7 @@ const useQueryBook = () => {
   }
 
   return {
+    total,
     resultList,
     hits,
     queryLoded,

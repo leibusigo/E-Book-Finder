@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import useQueryBook from '../../../../../hooks/useApi'
 
 const useHomeContent = () => {
-  const { resultList, queryLoded, queryBooks } = useQueryBook()
+  const { resultList, queryLoded, total, queryBooks } = useQueryBook()
   const [firstScreenLoad, setFirstScrennLoad] = useState(true)
   const [value, setValue] = useState('')
   const [maxPage, setMaxPage] = useState(1)
+  const [curPage, setCurPage] = useState(1)
 
   useEffect(() => {
     const subscription = PubSub.subscribe(
@@ -17,6 +18,7 @@ const useHomeContent = () => {
           setFirstScrennLoad(false)
           setValue(data.value)
           setMaxPage(1)
+          setCurPage(1)
         }
       }
     )
@@ -28,22 +30,23 @@ const useHomeContent = () => {
     return () => {
       PubSub.unsubscribe(subscription)
     }
-  }, [queryBooks, queryLoded])
+  }, [queryBooks, queryLoded, resultList.length])
 
   const onPageChange = async (page: number) => {
-    if (value) {
-      await queryBooks(value, page)
-    }
-    if (page > maxPage) {
+    await queryBooks(value, page)
+    if (page > maxPage && resultList.length !== 0) {
       setMaxPage(page)
     }
+    setCurPage(page)
   }
 
   return {
+    total,
+    curPage,
+    maxPage,
     resultList,
     queryLoded,
     firstScreenLoad,
-    maxPage,
     onPageChange,
   }
 }
