@@ -2,7 +2,7 @@ import { Empty, Flex, List, Tooltip } from 'antd'
 
 import styles from './index.module.scss'
 import useHomeContent from './hook'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback } from 'react'
 import { IQueryDetails } from '../../../../../models/ResModel'
 import { changeByte } from '../../../../../utils/byteFormat'
 import DetailModel from './DetailModel'
@@ -10,26 +10,26 @@ import DetailModel from './DetailModel'
 const HomeContent = () => {
   const {
     resultList,
-    queryLoded,
+    queryLoaded,
     firstScreenLoad,
     total,
     curPage,
     maxPage,
+    warpRef,
+    modelOpen,
+    bookDetail,
+    getDetailLoaded,
     onPageChange,
+    onItemClick,
+    onOpenChangeHandler,
   } = useHomeContent()
-  const warpRef = useRef<HTMLDivElement>(null)
-  const [modelOpen, setModelOpen] = useState(false)
-
-  const onOpenChangeHandler = (open: boolean) => {
-    setModelOpen(open)
-  }
 
   const itemTitle = useCallback(
-    (item: IQueryDetails, index: number) => {
+    ({ title }: IQueryDetails, index: number) => {
       return (
         <Flex gap={40}>
           <div className={styles.ellipsis}>
-            {(curPage - 1) * 20 + index + 1}. {item.title}
+            {(curPage - 1) * 20 + index + 1}. {title}
           </div>
         </Flex>
       )
@@ -37,28 +37,36 @@ const HomeContent = () => {
     [curPage]
   )
 
-  const itemDesc = useCallback((item: IQueryDetails) => {
-    return (
-      <Flex gap={20}>
-        <div className={`${styles.ellipsis} ${styles.autherInfo}`}>
-          作者：{item.author}
-        </div>
-        <div className={`${styles.ellipsis} ${styles.info}`}>
-          格式：{item.extension}
-        </div>
-        <div className={`${styles.ellipsis} ${styles.info}`}>
-          年份：{item.year}
-        </div>
-        <div className={`${styles.ellipsis} ${styles.info}`}>
-          大小：{changeByte(item.filesize)}
-        </div>
-      </Flex>
-    )
-  }, [])
+  const itemDesc = useCallback(
+    ({ author, extension, year, filesize }: IQueryDetails) => {
+      return (
+        <Flex gap={20}>
+          <div className={`${styles.ellipsis} ${styles.autherInfo}`}>
+            作者：{author}
+          </div>
+          <div className={`${styles.ellipsis} ${styles.info}`}>
+            格式：{extension}
+          </div>
+          <div className={`${styles.ellipsis} ${styles.info}`}>
+            年份：{year}
+          </div>
+          <div className={`${styles.ellipsis} ${styles.info}`}>
+            大小：{changeByte(filesize)}
+          </div>
+        </Flex>
+      )
+    },
+    []
+  )
 
   return (
     <>
-      <DetailModel open={modelOpen} onOpenChange={onOpenChangeHandler} />
+      <DetailModel
+        getDetailLoaded={getDetailLoaded}
+        bookDetail={bookDetail}
+        open={modelOpen}
+        onOpenChange={onOpenChangeHandler}
+      />
       {!firstScreenLoad ? (
         <>
           <Tooltip
@@ -72,7 +80,7 @@ const HomeContent = () => {
 
           <div ref={warpRef} className={styles.warp}>
             <List
-              loading={!queryLoded}
+              loading={!queryLoaded}
               pagination={{
                 total:
                   resultList.length === 19 && curPage === maxPage
@@ -91,7 +99,7 @@ const HomeContent = () => {
               renderItem={(item, index) => (
                 <List.Item
                   onClick={() => {
-                    setModelOpen(true)
+                    onItemClick(item)
                   }}
                   className={styles.item}
                 >

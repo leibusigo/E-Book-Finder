@@ -15,7 +15,7 @@ instance.interceptors.response.use(
   res => {
     // code不为0,直接抛出错误
     if (res.data.code !== 0) {
-      message.error(res.data.msg)
+      message.error(res.data.message)
       return Promise.reject(res)
     }
 
@@ -25,7 +25,7 @@ instance.interceptors.response.use(
     if (axios.isCancel(error)) {
       console.error('请求被取消')
     }
-    message.error(error.message || error)
+    message.error(error.message || error || '未知错误')
     return Promise.reject(error)
   }
 )

@@ -6,7 +6,7 @@ import { IQueryDetails, IResQueryBooks } from '../models/ResModel'
 const dataMap = new Map()
 
 const useQueryBook = () => {
-  const [queryLoded, setQueryLoaded] = useState(false)
+  const [queryLoaded, setQueryLoaded] = useState(false)
   const [resultList, setResultList] = useState<IQueryDetails[]>([])
   const [hits, setHits] = useState(0)
   const [total, setTotal] = useState(0)
@@ -48,7 +48,7 @@ const useQueryBook = () => {
     total,
     resultList,
     hits,
-    queryLoded,
+    queryLoaded,
     queryBooks,
   }
 }

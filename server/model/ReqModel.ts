@@ -6,5 +6,5 @@ export interface IReqQueryBooks {
 
 export interface IReqGetBookDetail {
   id: number
-  sources: string
+  source: string
 }

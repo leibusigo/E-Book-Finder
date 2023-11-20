@@ -3,7 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import NotFound from '../NotFound'
 import MainLayout from '../MainLayout'
 import HomePage from '../MainLayout/HomePage'
-import HistoryPage from '../MainLayout/HistoryPage'
+import AboutPage from '../MainLayout/AboutPage'
 import { ConfigProvider, Empty, theme } from 'antd'
 
 const App = () => {
@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/" element={<Navigate to={'/home'} />}></Route>
         <Route path="/" element={<MainLayout />}>
           <Route path="home" element={<HomePage />} />
-          <Route path="history" element={<HistoryPage />} />
+          <Route path="about" element={<AboutPage />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

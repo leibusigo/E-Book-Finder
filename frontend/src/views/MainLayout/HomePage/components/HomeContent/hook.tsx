@@ -1,13 +1,18 @@
 import PubSub from 'pubsub-js'
-import { useEffect, useState } from 'react'
-import useQueryBook from '../../../../../hooks/useApi'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import useQueryBook from '../../../../../hooks/useQueryBook'
+import { IQueryDetails } from '../../../../../models/ResModel'
+import useDetail from '../../../../../hooks/useDetail'
 
 const useHomeContent = () => {
-  const { resultList, queryLoded, total, queryBooks } = useQueryBook()
+  const { resultList, queryLoaded, total, queryBooks } = useQueryBook()
+  const { bookDetail, getDetailLoaded, getBookDetail } = useDetail()
   const [firstScreenLoad, setFirstScrennLoad] = useState(true)
   const [value, setValue] = useState('')
   const [maxPage, setMaxPage] = useState(1)
   const [curPage, setCurPage] = useState(1)
+  const warpRef = useRef<HTMLDivElement>(null)
+  const [modelOpen, setModelOpen] = useState(false)
 
   useEffect(() => {
     const subscription = PubSub.subscribe(
@@ -23,31 +28,52 @@ const useHomeContent = () => {
       }
     )
 
-    if (queryLoded) {
+    if (queryLoaded) {
       PubSub.publish('onSearchLoaded')
     }
 
     return () => {
       PubSub.unsubscribe(subscription)
     }
-  }, [queryBooks, queryLoded, resultList.length])
+  }, [queryBooks, queryLoaded, resultList.length])
 
-  const onPageChange = async (page: number) => {
-    await queryBooks(value, page)
-    if (page > maxPage && resultList.length !== 0) {
-      setMaxPage(page)
-    }
-    setCurPage(page)
-  }
+  const onPageChange = useCallback(
+    async (page: number) => {
+      await queryBooks(value, page)
+      if (page > maxPage && resultList.length !== 0) {
+        setMaxPage(page)
+      }
+      setCurPage(page)
+    },
+    [maxPage, queryBooks, resultList.length, value]
+  )
+
+  const onOpenChangeHandler = useCallback((open: boolean) => {
+    setModelOpen(open)
+  }, [])
+
+  const onItemClick = useCallback(
+    (item: IQueryDetails) => {
+      setModelOpen(true)
+      getBookDetail(item)
+    },
+    [getBookDetail]
+  )
 
   return {
+    bookDetail,
+    modelOpen,
+    warpRef,
     total,
     curPage,
     maxPage,
     resultList,
-    queryLoded,
+    queryLoaded,
+    getDetailLoaded,
     firstScreenLoad,
     onPageChange,
+    onOpenChangeHandler,
+    onItemClick,
   }
 }
 

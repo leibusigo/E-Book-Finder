@@ -1,4 +1,4 @@
-import { FileSearchOutlined, HistoryOutlined } from '@ant-design/icons'
+import { BulbOutlined, FileSearchOutlined } from '@ant-design/icons'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,9 +9,9 @@ export const menuOptions = [
     label: '搜索',
   },
   {
-    key: 'history',
-    icon: <HistoryOutlined />,
-    label: '历史记录',
+    key: 'about',
+    icon: <BulbOutlined />,
+    label: '关于',
   },
 ]
 

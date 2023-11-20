@@ -47,7 +47,7 @@ router.post('/detail', async ctx => {
     ctx.request.body as IReqGetBookDetail,
     Joi.object({
       id: Joi.number().required(),
-      sources: Joi.string().required(),
+      source: Joi.string().required(),
     })
   )
   try {
