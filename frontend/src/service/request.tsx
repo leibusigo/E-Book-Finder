@@ -25,7 +25,10 @@ instance.interceptors.response.use(
     if (axios.isCancel(error)) {
       console.error('请求被取消')
     }
-    message.error(error.message || error || '未知错误')
+    if (error) {
+      console.log('拦截器', error)
+      message.error(error.message || error || '未知错误')
+    }
     return Promise.reject(error)
   }
 )
